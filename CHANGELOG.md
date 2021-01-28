@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.8.37-signageos.1
+## 0.8.37-signageos.2
 * Add `--export-star-functions` option
 
 ## 0.8.36

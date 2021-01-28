@@ -1,3 +1,3 @@
 package main
 
-const esbuildVersion = "0.8.37-signageos.1"
+const esbuildVersion = "0.8.37-signageos.2"

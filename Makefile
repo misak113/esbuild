@@ -14,10 +14,10 @@ test-all:
 	make -j6 test-common ts-type-tests test-wasm-node test-wasm-browser
 
 # This includes tests of some 3rd-party libraries, which can be very slow
-test-prepublish: check-go-version test-all test-preact-splitting test-sucrase bench-rome-esbuild test-esprima test-rollup
+test-prepublish: check-go-version
 
 check-go-version:
-	@go version | grep 'go1\.15\.5' || (echo 'Please install Go version 1.15.5' && false)
+	@go version | grep 'go1\.15\.6' || (echo 'Please install Go version 1.15.6' && false)
 
 test-go:
 	go test ./internal/...
@@ -156,74 +156,74 @@ test-otp:
 	test -n "$(OTP)" && echo publish --otp="$(OTP)"
 
 publish-all: cmd/esbuild/version.go test-prepublish
-	@test master = "`git rev-parse --abbrev-ref HEAD`" || (echo "Refusing to publish from non-master branch `git rev-parse --abbrev-ref HEAD`" && false)
-	@echo "Checking for unpushed commits..." && git fetch
-	@test "" = "`git cherry`" || (echo "Refusing to publish with unpushed commits" && false)
-	rm -fr npm && git checkout npm
-	@echo Enter one-time password:
-	@read OTP && OTP="$$OTP" make -j4 \
+#	@test master = "`git rev-parse --abbrev-ref HEAD`" || (echo "Refusing to publish from non-master branch `git rev-parse --abbrev-ref HEAD`" && false)
+#	@echo "Checking for unpushed commits..." && git fetch
+#	@test "" = "`git cherry`" || (echo "Refusing to publish with unpushed commits" && false)
+#	rm -fr npm && git checkout npm
+#	@echo Enter one-time password:
+	make -j4 \
 		publish-windows \
 		publish-windows-32 \
 		publish-freebsd \
 		publish-freebsd-arm64
-	@echo Enter one-time password:
-	@read OTP && OTP="$$OTP" make -j4 \
+#	@echo Enter one-time password:
+	make -j4 \
 		publish-darwin \
 		publish-linux \
 		publish-linux-32
-	@echo Enter one-time password:
-	@read OTP && OTP="$$OTP" make -j4 \
+#	@echo Enter one-time password:
+	make -j4 \
 		publish-linux-arm \
 		publish-linux-arm64 \
 		publish-linux-mips64le \
 		publish-linux-ppc64le
 	# Do these last to avoid race conditions
-	@echo Enter one-time password:
-	@read OTP && OTP="$$OTP" make -j2 \
+#	@echo Enter one-time password:
+	make -j2 \
 		publish-neutral \
 		publish-wasm
-	git commit -am "publish $(ESBUILD_VERSION) to npm"
-	git tag "v$(ESBUILD_VERSION)"
-	git push origin master "v$(ESBUILD_VERSION)"
+#	git commit -am "publish $(ESBUILD_VERSION) to npm"
+#	git tag "v$(ESBUILD_VERSION)"
+#	git push origin master "v$(ESBUILD_VERSION)"
 
 publish-windows: platform-windows
-	test -n "$(OTP)" && cd npm/esbuild-windows-64 && npm publish --otp="$(OTP)"
+	cd npm/esbuild-windows-64 && npm publish
 
 publish-windows-32: platform-windows-32
-	test -n "$(OTP)" && cd npm/esbuild-windows-32 && npm publish --otp="$(OTP)"
+	cd npm/esbuild-windows-32 && npm publish
 
 publish-darwin: platform-darwin
-	test -n "$(OTP)" && cd npm/esbuild-darwin-64 && npm publish --otp="$(OTP)"
+	cd npm/esbuild-darwin-64 && npm publish
 
 publish-freebsd: platform-freebsd
-	test -n "$(OTP)" && cd npm/esbuild-freebsd-64 && npm publish --otp="$(OTP)"
+	cd npm/esbuild-freebsd-64 && npm publish
 
 publish-freebsd-arm64: platform-freebsd-arm64
-	test -n "$(OTP)" && cd npm/esbuild-freebsd-arm64 && npm publish --otp="$(OTP)"
+	cd npm/esbuild-freebsd-arm64 && npm publish
 
 publish-linux: platform-linux
-	test -n "$(OTP)" && cd npm/esbuild-linux-64 && npm publish --otp="$(OTP)"
+	cd npm/esbuild-linux-64 && npm publish
 
 publish-linux-32: platform-linux-32
-	test -n "$(OTP)" && cd npm/esbuild-linux-32 && npm publish --otp="$(OTP)"
+	cd npm/esbuild-linux-32 && npm publish
 
 publish-linux-arm: platform-linux-arm
-	test -n "$(OTP)" && cd npm/esbuild-linux-arm && npm publish --otp="$(OTP)"
+	cd npm/esbuild-linux-arm && npm publish
 
 publish-linux-arm64: platform-linux-arm64
-	test -n "$(OTP)" && cd npm/esbuild-linux-arm64 && npm publish --otp="$(OTP)"
+	cd npm/esbuild-linux-arm64 && npm publish
 
 publish-linux-mips64le: platform-linux-mips64le
-	test -n "$(OTP)" && cd npm/esbuild-linux-mips64le && npm publish --otp="$(OTP)"
+	cd npm/esbuild-linux-mips64le && npm publish
 
 publish-linux-ppc64le: platform-linux-ppc64le
-	test -n "$(OTP)" && cd npm/esbuild-linux-ppc64le && npm publish --otp="$(OTP)"
+	cd npm/esbuild-linux-ppc64le && npm publish
 
 publish-wasm: platform-wasm
-	test -n "$(OTP)" && cd npm/esbuild-wasm && npm publish --otp="$(OTP)"
+	cd npm/esbuild-wasm && npm publish
 
 publish-neutral: platform-neutral
-	test -n "$(OTP)" && cd npm/esbuild && npm publish --otp="$(OTP)"
+	cd npm/esbuild && npm publish
 
 clean:
 	rm -f esbuild

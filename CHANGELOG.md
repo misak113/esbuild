@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.8.37-signageos.1
+* Add `--export-star-functions` option
+
 ## 0.8.36
 
 * Fix an issue with writing large files to stdout using the WebAssembly executable
